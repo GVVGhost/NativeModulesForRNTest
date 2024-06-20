@@ -1,22 +1,7 @@
-import React from "react";
-import { Button, NativeModules, SafeAreaView, ScrollView, StatusBar, useColorScheme } from "react-native";
+import React, { useEffect } from "react";
+import { DeviceEventEmitter, SafeAreaView, ScrollView, StatusBar, useColorScheme } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
-
-const { CalendarModule } = NativeModules;
-
-const NewModuleButton = () => {
-  const onPress = () => {
-    CalendarModule.createCalendarEvent("testName", "testLocation");
-  };
-
-  return (
-    <Button
-      title="Click to invoke your native module!"
-      color="#841584"
-      onPress={onPress}
-    />
-  );
-};
+import NewModuleButton from "./NewModuleButton";
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === "dark";
@@ -24,6 +9,19 @@ function App(): React.JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter
   };
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      "TimeEvent",
+      (event: any) => {
+        console.log("Received event: ", event?.currentTime);
+      }
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return (
     <SafeAreaView style={backgroundStyle}>
