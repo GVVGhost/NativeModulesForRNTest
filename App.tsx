@@ -1,11 +1,19 @@
 import React, { useEffect } from "react";
-import { DeviceEventEmitter, SafeAreaView, ScrollView, StatusBar, useColorScheme } from "react-native";
+import {
+  AppState,
+  AppStateStatus,
+  DeviceEventEmitter,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  useColorScheme
+} from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import NewModuleButton from "./NewModuleButton";
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === "dark";
-
+  let currentAppState: AppStateStatus = AppState.currentState;
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter
   };
@@ -18,8 +26,15 @@ function App(): React.JSX.Element {
       }
     );
 
+    const appStateListener = AppState.addEventListener("change", state => {
+      console.log('Current state: ', currentAppState);
+      console.log('Received state: ', state);
+      currentAppState = state;
+    });
+
     return () => {
       subscription.remove();
+      appStateListener.remove()
     };
   }, []);
 

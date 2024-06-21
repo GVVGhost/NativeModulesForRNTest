@@ -29,8 +29,6 @@ class TimeModule(reactContext: ReactApplicationContext) :
             .emit(eventName, params)
     }
 
-
-
     @ReactMethod
     fun addListener(eventName: String) {
         Log.d("TimeModule", "invoked addListener with event name: $eventName")
@@ -41,7 +39,7 @@ class TimeModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun removeListeners(count: Int){
+    fun removeListeners(count: Int) {
         Log.d("TimeModule", "invoked removeListeners with count: $count")
         listenerCount -= count
         if (listenerCount == 0) {
@@ -49,7 +47,7 @@ class TimeModule(reactContext: ReactApplicationContext) :
         }
     }
 
-    private fun startSendingTime(){
+    private fun startSendingTime() {
         runnable = object : Runnable {
             override fun run() {
                 val params = Arguments.createMap().apply {
@@ -62,13 +60,7 @@ class TimeModule(reactContext: ReactApplicationContext) :
         handler.post(runnable)
     }
 
-    private fun stopSendingTime(){
+    private fun stopSendingTime() {
         handler.removeCallbacks(runnable)
     }
-
-
-//    val params = Arguments.createMap().apply {
-//        putString("eventProperty", "someValue")
-//    }
-//    sendEvent(reactContext, "EventReminder", params)
 }
